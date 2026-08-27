@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revisão Interativa — Ciências e Física 8º Ano</title>
+<style>
+  :root{
+    --bg:#f5f7fb;
+    --card:#ffffff;
+    --text:#172033;
+    --muted:#657089;
+    --primary:#2563eb;
+    --primary2:#1d4ed8;
+    --ok:#16803c;
+    --bad:#c62828;
+    --warn:#b45309;
+    --line:#dfe5ef;
+    --soft:#eef4ff;
+    --shadow:0 10px 30px rgba(25,40,70,.10);
+    --radius:22px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    background:linear-gradient(180deg,#eef4ff 0,#f7f9fc 240px,#f5f7fb 100%);
+    color:var(--text);
+  }
+  .app{max-width:860px;margin:0 auto;padding:18px 14px 42px}
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    margin-bottom:14px;
+  }
+  .brand{font-weight:900;letter-spacing:-.02em;font-size:18px}
+  .pill{
+    background:#fff;border:1px solid var(--line);padding:8px 12px;border-radius:999px;
+    color:var(--muted);font-size:13px;font-weight:700
+  }
+  .hero,.panel{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);
+  }
+  .hero{padding:28px 22px;text-align:center}
+  h1{font-size:clamp(28px,6vw,46px);line-height:1.03;margin:8px 0 12px;letter-spacing:-.04em}
+  .subtitle{color:var(--muted);font-size:16px;line-height:1.55;max-width:660px;margin:0 auto 20px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}
+  .mini{
+    background:#f8faff;border:1px solid var(--line);padding:14px;border-radius:16px;
+    font-size:13px;color:var(--muted)
+  }
+  .mini b{display:block;color:var(--text);font-size:18px;margin-bottom:4px}
+  button{
+    border:0;border-radius:14px;padding:13px 18px;font-weight:800;font-size:15px;
+    cursor:pointer;transition:.18s ease;touch-action:manipulation
+  }
+  button:active{transform:scale(.98)}
+  .btn-primary{background:var(--primary);color:#fff}
+  .btn-primary:hover{background:var(--primary2)}
+  .btn-secondary{background:#eef2f7;color:var(--text)}
+  .btn-danger{background:#fff1f1;color:var(--bad);border:1px solid #ffd5d5}
+  .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .hidden{display:none!important}
+  .panel{padding:20px}
+  .module-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px}
+  .module-tab{white-space:nowrap;background:#eef2f7;color:#536078;padding:10px 12px}
+  .module-tab.active{background:var(--primary);color:#fff}
+  .progress-wrap{margin:10px 0 18px}
+  .progress-line{height:10px;background:#e9edf4;border-radius:999px;overflow:hidden}
+  .progress-bar{height:100%;background:linear-gradient(90deg,#2563eb,#60a5fa);width:0%;transition:.3s}
+  .progress-text{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;font-weight:700;margin-bottom:6px}
+  .study-card{min-height:400px;display:flex;flex-direction:column}
+  .eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--primary);font-weight:900;margin-bottom:8px}
+  .study-card h2,.quiz-card h2{font-size:27px;line-height:1.12;margin:0 0 14px;letter-spacing:-.02em}
+  .explain{font-size:16px;line-height:1.68;color:#28344a}
+  .explain p{margin:0 0 12px}
+  .formula{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    background:#101827;color:#f8fbff;border-radius:14px;padding:14px 16px;
+    margin:14px 0;font-size:16px;overflow-x:auto
+  }
+  .key{
+    background:#fff8e8;border:1px solid #f7dda4;border-left:5px solid #f59e0b;
+    padding:14px 15px;border-radius:14px;margin-top:14px;line-height:1.5
+  }
+  .nav{display:flex;justify-content:space-between;gap:10px;margin-top:20px}
+  .nav button{flex:1}
+  .quiz-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:8px}
+  .score-badge{
+    background:#effaf3;color:var(--ok);border:1px solid #d5f0de;border-radius:999px;
+    padding:8px 12px;font-size:13px;font-weight:900
+  }
+  .quiz-card{min-height:500px}
+  .question{font-size:21px;line-height:1.4;font-weight:850;margin:10px 0 18px}
+  .options{display:grid;gap:10px}
+  .option{
+    width:100%;text-align:left;background:#f8faff;color:var(--text);
+    border:2px solid var(--line);padding:14px 16px;border-radius:16px;font-weight:700;
+    line-height:1.4
+  }
+  .option:hover:not(:disabled){border-color:#9ab8ff;background:#f3f7ff}
+  .option:disabled{cursor:default;opacity:1}
+  .option.correct{background:#eaf8ef;border-color:#3aa45f;color:#0f6a31}
+  .option.wrong{background:#fff0f0;border-color:#e45d5d;color:#a21c1c}
+  .feedback{
+    margin-top:16px;border-radius:16px;padding:16px;border:1px solid var(--line);line-height:1.55
+  }
+  .feedback.ok{background:#eefaf2;border-color:#bfe6cb}
+  .feedback.bad{background:#fff3f3;border-color:#f0c4c4}
+  .feedback h3{margin:0 0 8px;font-size:18px}
+  .result{text-align:center;padding:28px 10px}
+  .result .big{font-size:70px;font-weight:950;letter-spacing:-.05em;color:var(--primary)}
+  .result h2{font-size:30px;margin:8px 0}
+  .result p{color:var(--muted);font-size:16px;line-height:1.5}
+  .review-list{margin-top:18px;text-align:left;display:grid;gap:10px}
+  .review-item{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fafcff}
+  .review-item b{display:block;margin-bottom:4px}
+  .footer-note{text-align:center;color:var(--muted);font-size:12px;margin-top:16px}
+  .toast{
+    position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
+    background:#111827;color:#fff;padding:11px 16px;border-radius:999px;font-weight:800;
+    box-shadow:0 8px 30px rgba(0,0,0,.2);z-index:20
+  }
+  @media(max-width:640px){
+    .grid3{grid-template-columns:1fr}
+    .hero{padding:22px 16px}
+    .panel{padding:15px}
+    .study-card h2,.quiz-card h2{font-size:23px}
+    .question{font-size:19px}
+    .nav{flex-direction:column-reverse}
+    .nav button{width:100%}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand">📘 Revisão Interativa</div>
+    <div class="pill" id="saveStatus">progresso salvo neste aparelho</div>
+  </div>
+
+  <section id="home" class="hero">
+    <div style="font-size:42px">🧠⚡🧬</div>
+    <h1>Ciências + Física<br>8º ano</h1>
+    <p class="subtitle">
+      Estude <b>parte por parte</b>, avance no seu ritmo e depois responda a <b>50 questões</b>.
+      Cada resposta mostra imediatamente por que está certa ou errada e como chegar à resposta correta.
+    </p>
+    <div class="grid3">
+      <div class="mini"><b>67</b>explicações em cartões</div>
+      <div class="mini"><b>50</b>questões interativas</div>
+      <div class="mini"><b>100%</b>funciona offline</div>
+    </div>
+    <div class="actions">
+      <button class="btn-primary" onclick="startStudy()">▶ Começar explicações</button>
+      <button class="btn-secondary" onclick="startQuiz()">📝 Ir direto às questões</button>
+      <button class="btn-danger" onclick="resetAll()">↻ Recomeçar tudo</button>
+    </div>
+  </section>
+
+  <section id="study" class="panel hidden">
+    <div class="module-tabs" id="moduleTabs"></div>
+    <div class="progress-wrap">
+      <div class="progress-text">
+        <span id="studyProgressText"></span><span id="studyModuleText"></span>
+      </div>
+      <div class="progress-line"><div class="progress-bar" id="studyProgressBar"></div></div>
+    </div>
+    <div class="study-card">
+      <div class="eyebrow" id="studyEyebrow"></div>
+      <h2 id="studyTitle"></h2>
+      <div class="explain" id="studyBody"></div>
+      <div class="key" id="studyKey"></div>
+      <div class="nav">
+        <button class="btn-secondary" id="prevStudy" onclick="prevStudy()">← Anterior</button>
+        <button class="btn-primary" id="nextStudy" onclick="nextStudy()">Próximo →</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="quiz" class="panel hidden">
+    <div class="quiz-head">
+      <div class="pill" id="quizProgress">Questão 1 de 50</div>
+      <div class="score-badge" id="scoreBadge">0 acertos</div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-line"><div class="progress-bar" id="quizProgressBar"></div></div>
+    </div>
+    <div class="quiz-card" id="quizCard">
+      <div class="eyebrow" id="quizTopic"></div>
+      <div class="question" id="questionText"></div>
+      <div class="options" id="options"></div>
+      <div class="feedback hidden" id="feedback"></div>
+      <div class="nav">
+        <button class="btn-secondary" onclick="goHome()">⌂ Início</button>
+        <button class="btn-primary hidden" id="nextQuestion" onclick="nextQuestion()">Próxima pergunta →</button>
+      </div>
+    </div>
+    <div class="result hidden" id="result"></div>
+  </section>
+
+  <div class="footer-note">Arquivo único HTML • sem cadastro • sem internet • respostas salvas no navegador</div>
+</div>
+
+<script>
+const lessons = [
+  // BIOLOGIA
+  {m:"Biologia",t:"1. Fecundação e gametas",b:`<p>Na puberdade, o sistema reprodutor amadurece. Os <b>gametas</b> são as células reprodutivas: espermatozoide no homem e ovócito secundário na mulher.</p><p>A <b>fecundação</b> ocorre quando um espermatozoide se une ao ovócito, normalmente em uma das tubas uterinas.</p>`,k:"Sequência-chave: ovócito + espermatozoide → fecundação → zigoto."},
+  {m:"Biologia",t:"2. Zigoto, embrião e feto",b:`<p>Da fecundação surge o <b>zigoto</b>, a primeira célula do novo indivíduo. Ele começa a se dividir enquanto segue em direção ao útero.</p><p>Com o desenvolvimento, passa-se pelas fases de <b>embrião</b> e depois <b>feto</b>.</p>`,k:"Decore: zigoto → embrião → feto → bebê."},
+  {m:"Biologia",t:"3. Nidação ou implantação",b:`<p>Ao chegar ao útero, o embrião se fixa no <b>endométrio</b>, a camada interna do útero. Essa fixação é chamada de <b>nidação</b> ou <b>implantação</b>.</p>`,k:"Nidação = fixação do embrião no endométrio."},
+  {m:"Biologia",t:"4. Fertilização in vitro",b:`<p>Na <b>fertilização in vitro</b>, a fecundação ocorre em laboratório. Depois, o embrião é colocado no útero.</p><p>É uma técnica de reprodução assistida.</p>`,k:"In vitro: fecundação fora do corpo; depois o embrião é transferido para o útero."},
+  {m:"Biologia",t:"5. Placenta",b:`<p>A <b>placenta</b> é um órgão temporário da gestação. Nela ocorrem trocas de substâncias entre gestante e feto.</p><p>O feto recebe oxigênio e nutrientes; gás carbônico e resíduos seguem em direção ao organismo materno para eliminação.</p>`,k:"Placenta = trocas entre gestante e feto."},
+  {m:"Biologia",t:"6. Cordão umbilical e líquido amniótico",b:`<p>O <b>cordão umbilical</b> liga o feto à placenta e possui vasos sanguíneos.</p><p>O <b>líquido amniótico</b> envolve o feto, ajuda a amortecer impactos e permite movimentos.</p>`,k:"Cordão = ligação. Líquido amniótico = proteção."},
+  {m:"Biologia",t:"7. Gestação: 9 e 16 semanas",b:`<p>A gestação humana dura aproximadamente <b>38 a 42 semanas</b>.</p><p>Por volta de <b>9 semanas</b> começa a fase fetal. Por volta de <b>16 semanas</b>, movimentos ficam mais evidentes e ossos, articulações e genitais externos continuam se desenvolvendo.</p>`,k:"9 semanas: fase fetal. 16 semanas: movimentos mais perceptíveis."},
+  {m:"Biologia",t:"8. Gestação: 24 e 32 semanas",b:`<p>Por volta de <b>24 semanas</b>, o sistema nervoso está mais desenvolvido, mas os pulmões ainda são imaturos.</p><p>Por volta de <b>32 semanas</b>, o feto ocupa grande parte do útero, ganha peso e muitos já ficam com a cabeça voltada para baixo.</p>`,k:"O sistema respiratório amadurece até perto do nascimento."},
+  {m:"Biologia",t:"9. Parto vaginal",b:`<p>No parto vaginal, contrações uterinas ficam progressivamente mais fortes e frequentes. O colo do útero dilata para permitir a passagem do bebê.</p><p>Depois do nascimento, ocorre a saída da placenta.</p>`,k:"Parto vaginal: contrações + dilatação + passagem pelo canal vaginal."},
+  {m:"Biologia",t:"10. Cesariana",b:`<p>A cesariana é uma cirurgia com incisões no abdome e no útero. Pode ser necessária quando o parto vaginal representa maior risco para gestante ou bebê.</p><p>Por ser cirurgia, geralmente exige maior recuperação e cuidado com a incisão.</p>`,k:"Cesárea é cirurgia; não é sinônimo de parto 'mais fácil'."},
+  {m:"Biologia",t:"11. Adoção",b:`<p>A adoção é um processo legal e social pelo qual uma criança ou adolescente passa a integrar uma nova família.</p><p>No Brasil, é regulada principalmente pelo <b>ECA</b>. Família envolve também afeto, cuidado, responsabilidade e convivência, não apenas laços biológicos.</p>`,k:"Adoção estabelece relação familiar e deveres de cuidado, proteção e educação."},
+  {m:"Biologia",t:"12. Maternidade e paternidade na adolescência",b:`<p>Uma gravidez na adolescência pode trazer mudanças escolares, familiares, emocionais, financeiras e sociais.</p><p>Informação, planejamento, diálogo e orientação de profissionais de saúde são fundamentais.</p>`,k:"Prevenção e informação são centrais para decisões responsáveis."},
+  {m:"Biologia",t:"13. IST: transmissão e sintomas",b:`<p>IST podem ser causadas por vírus, bactérias e protozoários. A principal forma de transmissão é o contato sexual sem preservativo com pessoa infectada.</p><p>Algumas também podem ser transmitidas por sangue contaminado, compartilhamento de seringas e da mãe para o bebê.</p><p>Uma pessoa pode ter IST <b>sem sintomas</b>.</p>`,k:"Ausência de sintomas não significa ausência de IST."},
+  {m:"Biologia",t:"14. Principais IST",b:`<p><b>Gonorreia</b> e <b>clamídia</b>: bactérias. <b>HPV</b>, <b>herpes</b> e <b>HIV</b>: vírus. <b>Tricomoníase</b>: protozoário. <b>Sífilis</b>: bactéria.</p><p>Algumas têm cura; outras podem ser controladas. Diagnóstico e tratamento precoces reduzem complicações e transmissão.</p>`,k:"HIV é o vírus; Aids é uma fase avançada da infecção pelo HIV."},
+  {m:"Biologia",t:"15. Prevenção das IST",b:`<p>Preservativos externo e interno ajudam a prevenir gravidez e <b>reduzem o risco de IST</b>.</p><p>Pílula, DIU, implante, injeção, tabelinha e outros métodos contraceptivos podem evitar gravidez, mas <b>não protegem contra IST</b>.</p>`,k:"Preservativo é o método contraceptivo do conteúdo que também reduz risco de IST."},
+  {m:"Biologia",t:"16. Métodos naturais ou comportamentais",b:`<p>A <b>tabelinha</b> acompanha o ciclo menstrual para estimar os dias férteis, mas pode falhar porque a ovulação varia.</p><p>O <b>muco cervical</b> observa alterações no muco. O <b>coito interrompido</b> depende da retirada antes da ejaculação e tem risco de falha.</p>`,k:"Nenhum desses métodos protege contra IST."},
+  {m:"Biologia",t:"17. Métodos de barreira",b:`<p>Preservativos externo e interno formam uma barreira física para impedir a passagem do sêmen/espermatozoides.</p><p>O <b>diafragma</b> cobre o colo do útero, mas não é considerado proteção contra IST.</p>`,k:"Barreira física ≠ necessariamente proteção contra IST; o destaque são os preservativos."},
+  {m:"Biologia",t:"18. Métodos hormonais",b:`<p>Pílula, injeções, implante e anel vaginal utilizam hormônios para principalmente impedir a ovulação e provocar alterações que dificultam a gravidez.</p>`,k:"Métodos hormonais podem ser eficazes, mas não protegem contra IST."},
+  {m:"Biologia",t:"19. DIU",b:`<p>O DIU é colocado no útero por profissional de saúde. O <b>DIU de cobre</b> dificulta a sobrevivência e o funcionamento dos espermatozoides.</p><p>O <b>DIU hormonal</b> libera hormônio e cria condições que dificultam a gravidez.</p>`,k:"DIU é de longa duração, porém não protege contra IST."},
+  {m:"Biologia",t:"20. Métodos cirúrgicos",b:`<p>Na <b>laqueadura</b>, as tubas uterinas são cortadas ou bloqueadas.</p><p>Na <b>vasectomia</b>, os canais deferentes são cortados ou bloqueados, impedindo que os espermatozoides cheguem ao sêmen.</p><p>A vasectomia não impede a produção de hormônios nem a ejaculação.</p>`,k:"Laqueadura → tubas uterinas. Vasectomia → canais deferentes."},
+
+  // ENERGIA E TRABALHO
+  {m:"Energia e Trabalho",t:"21. Formas de energia",b:`<p>Energia é a capacidade de provocar movimento, transformação ou mudança. Pode aparecer de muitas formas: mecânica, luminosa, elétrica, térmica, química e nuclear.</p>`,k:"Energia pode mudar de forma sem desaparecer."},
+  {m:"Energia e Trabalho",t:"22. Energia luminosa e elétrica",b:`<p>Energia luminosa é transportada pela luz. O Sol é a principal fonte natural para a Terra.</p><p>Energia elétrica está relacionada ao movimento ou organização de cargas e pode ser convertida em luz, calor, som ou movimento.</p>`,k:"Painel fotovoltaico: luminosa → elétrica. Chuveiro: elétrica → térmica."},
+  {m:"Energia e Trabalho",t:"23. Energia química, térmica e nuclear",b:`<p>Energia química fica armazenada nas ligações químicas de alimentos, combustíveis, pilhas e baterias.</p><p>Energia térmica relaciona-se à agitação das partículas. Energia nuclear está no núcleo dos átomos e pode ser liberada em processos como a fissão.</p>`,k:"Pilhas: química → elétrica. Combustão: química → térmica."},
+  {m:"Energia e Trabalho",t:"24. Energia mecânica",b:`<p>A energia mecânica é a soma da energia cinética com a energia potencial.</p><div class="formula">Em = Ec + Ep</div>`,k:"Movimento → cinética. Posição/deformação → potencial."},
+  {m:"Energia e Trabalho",t:"25. Energia cinética",b:`<p>É a energia associada ao movimento.</p><div class="formula">Ec = (m · v²) / 2</div><p>Como a velocidade está ao quadrado, dobrar a velocidade torna a energia cinética <b>4 vezes maior</b>.</p>`,k:"Dobrou v → Ec ×4. Triplicou v → Ec ×9."},
+  {m:"Energia e Trabalho",t:"26. Energia potencial gravitacional",b:`<p>É a energia associada à altura de um corpo em um campo gravitacional.</p><div class="formula">Epg = m · g · h</div><p>Em muitos exercícios escolares usa-se g ≈ 10 m/s².</p>`,k:"Maior massa ou maior altura → maior Epg."},
+  {m:"Energia e Trabalho",t:"27. Energia potencial elástica",b:`<p>É armazenada em corpos elásticos deformados, como molas e elásticos.</p><div class="formula">Epel = (k · x²) / 2</div>`,k:"Ao soltar, energia potencial elástica pode virar energia cinética."},
+  {m:"Energia e Trabalho",t:"28. Trabalho em Física",b:`<p>Em Física, há trabalho quando uma força provoca deslocamento.</p><div class="formula">τ = F · d · cos(θ)</div><p>A unidade é o joule (J).</p>`,k:"Força sem deslocamento pode significar trabalho igual a zero."},
+  {m:"Energia e Trabalho",t:"29. Ângulo e sinal do trabalho",b:`<p>Se força e deslocamento têm a mesma direção: θ=0°, trabalho positivo.</p><p>Se são perpendiculares: θ=90°, trabalho zero.</p><p>Se são opostos: θ=180°, trabalho negativo.</p>`,k:"0° → positivo. 90° → zero. 180° → negativo."},
+  {m:"Energia e Trabalho",t:"30. Teorema trabalho–energia",b:`<p>O trabalho da força resultante é igual à variação da energia cinética.</p><div class="formula">τ = ΔEc = Ec(final) − Ec(inicial)</div>`,k:"Se o corpo acelera, Ec aumenta; se desacelera, Ec diminui."},
+  {m:"Energia e Trabalho",t:"31. Força peso",b:`<p>Peso é a força com que a Terra atrai um corpo.</p><div class="formula">P = m · g</div><p>Massa é medida em kg; peso, em newtons (N).</p>`,k:"Massa ≠ peso."},
+  {m:"Energia e Trabalho",t:"32. Trabalho da força peso",b:`<p>Na descida, peso e deslocamento têm o mesmo sentido: trabalho do peso é positivo.</p><p>Na subida, são sentidos opostos: trabalho do peso é negativo.</p>`,k:"Descendo: peso ajuda. Subindo: peso se opõe."},
+  {m:"Energia e Trabalho",t:"33. Conservação de energia",b:`<p>A energia não é criada nem destruída: ela é transformada ou transferida.</p><p>Em uma pista sem atrito, energia potencial e cinética se transformam entre si.</p>`,k:"Em sistema ideal: energia mecânica inicial = energia mecânica final."},
+  {m:"Energia e Trabalho",t:"34. Atrito e dissipação",b:`<p>Na vida real, o atrito transforma parte da energia mecânica em energia térmica e, às vezes, sonora.</p><p>A energia total não some; apenas muda de forma.</p>`,k:"Atrito reduz energia mecânica, não a energia total do universo."},
+  {m:"Energia e Trabalho",t:"35. Fontes renováveis e não renováveis",b:`<p><b>Renováveis</b> podem ser repostas em escala de tempo humana: solar, eólica, hidráulica, biomassa.</p><p><b>Não renováveis</b> são limitadas ou levam muito tempo para se formar: petróleo, carvão, gás natural e urânio.</p>`,k:"Renovável não significa impacto ambiental zero."},
+  {m:"Energia e Trabalho",t:"36. Combustíveis fósseis",b:`<p>Petróleo, carvão mineral e gás natural armazenam energia química. Sua queima libera calor e também pode liberar CO₂ e outros poluentes.</p>`,k:"Fósseis são não renováveis e contribuem para emissões de gases de efeito estufa."},
+  {m:"Energia e Trabalho",t:"37. Energia nuclear como fonte",b:`<p>Usa materiais como urânio. Produz muita energia e tem baixas emissões diretas de CO₂ na geração, mas gera resíduos radioativos e exige alta segurança.</p>`,k:"Urânio é recurso não renovável."},
+  {m:"Energia e Trabalho",t:"38. Biogás",b:`<p>Resíduos orgânicos podem ser colocados em biodigestores. Microrganismos decompõem a matéria e geram biogás, rico em metano.</p><p>O biogás pode gerar energia térmica ou elétrica; o resíduo pode virar biofertilizante.</p>`,k:"Biodigestor: resíduos orgânicos → biogás + biofertilizante."},
+  {m:"Energia e Trabalho",t:"39. Matriz energética",b:`<p>A matriz energética é o conjunto de fontes de energia usadas por um país.</p><p>O Brasil combina fontes renováveis e não renováveis e possui participação relativamente elevada de renováveis.</p>`,k:"Matriz energética não é uma única fonte: é o conjunto delas."},
+  {m:"Energia e Trabalho",t:"40. Forno solar",b:`<p>O forno solar transforma energia luminosa em térmica. Papel-alumínio reflete radiação para dentro; superfícies escuras absorvem mais radiação; filme transparente ajuda a reter calor.</p>`,k:"Forno solar: luminosa → térmica."},
+
+  // ELETRICIDADE E GERAÇÃO
+  {m:"Eletricidade e Geração",t:"41. Condutores e isolantes",b:`<p>Condutores permitem movimento mais fácil de cargas elétricas. Metais como cobre e alumínio são bons condutores.</p><p>Isolantes dificultam o movimento de cargas: plástico, borracha, vidro, madeira seca e cerâmica.</p>`,k:"Fio elétrico: metal por dentro, isolante por fora."},
+  {m:"Eletricidade e Geração",t:"42. Água e eletricidade",b:`<p>Água extremamente pura conduz muito pouco. Água comum contém sais e íons dissolvidos, por isso pode conduzir eletricidade.</p>`,k:"Água de torneira e eletricidade podem ser uma combinação perigosa."},
+  {m:"Eletricidade e Geração",t:"43. Resistência elétrica",b:`<p>Resistência é a dificuldade oferecida à passagem da corrente elétrica. Sua unidade é o <b>ohm (Ω)</b>.</p><p>Fio mais comprido tende a ter maior resistência; fio mais grosso, menor resistência.</p>`,k:"R em ohms (Ω)."},
+  {m:"Eletricidade e Geração",t:"44. Estrutura do átomo",b:`<p>Próton: carga positiva, no núcleo. Nêutron: neutro, no núcleo. Elétron: carga negativa, ao redor do núcleo.</p><p>Átomo neutro possui igual número de prótons e elétrons.</p>`,k:"Próton + ; elétron − ; nêutron 0."},
+  {m:"Eletricidade e Geração",t:"45. Íons e cargas",b:`<p>Quando um átomo perde elétrons, fica positivo: <b>cátion</b>. Quando ganha elétrons, fica negativo: <b>ânion</b>.</p><p>Cargas iguais se repelem; cargas diferentes se atraem.</p>`,k:"Perde elétron → positivo. Ganha elétron → negativo."},
+  {m:"Eletricidade e Geração",t:"46. Corrente e tensão",b:`<p>Corrente elétrica é o movimento ordenado de cargas. Sua unidade é o <b>ampère (A)</b>.</p><p>Tensão ou diferença de potencial é medida em <b>volts (V)</b> e funciona como o 'empurrão' que favorece o movimento das cargas.</p>`,k:"Corrente = A. Tensão = V. Resistência = Ω."},
+  {m:"Eletricidade e Geração",t:"47. Sentido da corrente",b:`<p>Nos metais, elétrons se deslocam do polo negativo para o positivo.</p><p>O sentido convencional da corrente foi definido no sentido oposto: positivo para negativo.</p>`,k:"Elétrons: − → +. Corrente convencional: + → −."},
+  {m:"Eletricidade e Geração",t:"48. Corrente contínua e alternada",b:`<p><b>CC</b>: mantém o sentido predominante, como em pilhas e baterias.</p><p><b>CA</b>: muda periodicamente de sentido e é usada nas redes residenciais.</p>`,k:"Pilha → CC. Tomada → CA."},
+  {m:"Eletricidade e Geração",t:"49. Efeito Joule",b:`<p>Quando corrente atravessa um material resistivo, parte da energia elétrica vira calor. É o <b>efeito Joule</b>.</p><p>Exemplos: chuveiro, ferro de passar, torradeira e aquecedor.</p>`,k:"Efeito Joule: elétrica → térmica."},
+  {m:"Eletricidade e Geração",t:"50. Circuito elétrico",b:`<p>Um circuito simples possui fonte/gerador, fios condutores, receptor e, muitas vezes, interruptor.</p><p>Circuito fechado tem caminho completo; circuito aberto interrompe a corrente.</p>`,k:"Fechado = corrente circula. Aberto = corrente interrompida."},
+  {m:"Eletricidade e Geração",t:"51. Série e paralelo",b:`<p>Em série há um caminho principal: a mesma corrente atravessa os componentes e a tensão se divide.</p><p>Em paralelo há ramificações: os ramos recebem a mesma tensão da fonte ideal e uma lâmpada pode falhar sem apagar todas as outras.</p>`,k:"Residências usam principalmente ligações em paralelo."},
+  {m:"Eletricidade e Geração",t:"52. Hidrelétrica",b:`<p>Água armazenada em altura possui energia potencial gravitacional. Ao descer, ganha energia cinética, movimenta turbina e o gerador converte energia mecânica em elétrica.</p>`,k:"Água → turbina → gerador → eletricidade."},
+  {m:"Eletricidade e Geração",t:"53. Termelétrica",b:`<p>Combustível libera calor, que aquece água e produz vapor. O vapor movimenta turbina, que gira o gerador.</p>`,k:"Combustível → calor → vapor → turbina → gerador."},
+  {m:"Eletricidade e Geração",t:"54. História da eletricidade",b:`<p>Experimentos antigos mostraram eletrização por atrito. William Gilbert estudou eletricidade e magnetismo. Benjamin Franklin investigou eletricidade atmosférica. Alessandro Volta desenvolveu a pilha voltaica.</p>`,k:"Volt (V) homenageia Alessandro Volta."},
+  {m:"Eletricidade e Geração",t:"55. Magnetismo",b:`<p>Ímãs têm polos norte (N) e sul (S). Polos iguais se repelem e polos diferentes se atraem.</p><p>Ao redor do ímã existe um campo magnético.</p>`,k:"N-N e S-S repelem; N-S atraem."},
+  {m:"Eletricidade e Geração",t:"56. Corrente gera campo magnético",b:`<p>Quando corrente passa por um fio, surge campo magnético ao redor dele.</p><p>Isso permite criar eletroímãs e está na base de muitos motores, relés e alto-falantes.</p>`,k:"Corrente elétrica → campo magnético."},
+  {m:"Eletricidade e Geração",t:"57. Eletroímã",b:`<p>Uma bobina percorrida por corrente gera campo magnético. Com núcleo ferromagnético, o efeito pode ficar muito mais forte.</p><p>Ao cortar a corrente, o efeito do eletroímã diminui ou pode desaparecer.</p>`,k:"Eletroímã depende de corrente elétrica."},
+  {m:"Eletricidade e Geração",t:"58. Indução eletromagnética",b:`<p>Uma <b>variação do campo magnético</b> através de um condutor pode induzir corrente elétrica.</p><p>Movimentar um ímã para dentro ou para fora de uma bobina muda o fluxo magnético e pode gerar corrente.</p>`,k:"Variação de campo magnético → corrente induzida."},
+  {m:"Eletricidade e Geração",t:"59. Gerador elétrico",b:`<p>O gerador usa indução eletromagnética para transformar energia mecânica em energia elétrica.</p>`,k:"Gerador: mecânica → elétrica. Motor: elétrica → mecânica."},
+  {m:"Eletricidade e Geração",t:"60. Usina nuclear",b:`<p>A fissão nuclear libera calor. Esse calor produz vapor, que movimenta turbina e gerador.</p>`,k:"Nuclear: fissão → calor → vapor → turbina → gerador."},
+  {m:"Eletricidade e Geração",t:"61. Energia eólica",b:`<p>O vento movimenta as pás do aerogerador. O eixo transmite movimento ao gerador, que produz eletricidade.</p>`,k:"Vento → pás → gerador → eletricidade."},
+  {m:"Eletricidade e Geração",t:"62. Energia solar fotovoltaica",b:`<p>Células fotovoltaicas convertem diretamente energia luminosa em elétrica.</p><p>Em sistemas residenciais, um inversor converte a corrente contínua dos módulos em corrente alternada compatível com a instalação.</p>`,k:"Painel: luz → eletricidade. Inversor: CC → CA."},
+  {m:"Eletricidade e Geração",t:"63. Caminho da energia elétrica",b:`<p>Um caminho típico é: usina → transformador → linhas de transmissão → subestação → transformadores → rede de distribuição → consumidores.</p>`,k:"Transmissão leva energia a grandes distâncias; distribuição entrega aos consumidores."},
+  {m:"Eletricidade e Geração",t:"64. Por que transmitir em alta tensão?",b:`<p>Os fios têm resistência e sofrem perdas por efeito Joule. Para transmitir a mesma potência com menor corrente e menores perdas, usa-se alta tensão.</p>`,k:"Alta tensão na transmissão ajuda a reduzir perdas."},
+  {m:"Eletricidade e Geração",t:"65. Transformadores",b:`<p>Transformadores alteram a tensão em sistemas de corrente alternada.</p><p>Transformador elevador aumenta a tensão; abaixador reduz a tensão.</p>`,k:"Próximo da usina: tensão sobe. Próximo ao consumidor: tensão desce."},
+  {m:"Eletricidade e Geração",t:"66. Linhas, subestações e distribuição",b:`<p>Linhas de transmissão transportam grandes blocos de energia. Subestações controlam, protegem e alteram níveis de tensão. Redes de distribuição levam energia a bairros e residências.</p>`,k:"Transmissão ≠ distribuição."},
+  {m:"Eletricidade e Geração",t:"67. Visão geral das usinas",b:`<p>Hidrelétrica: água gira turbina. Termelétrica: vapor gira turbina. Nuclear: calor da fissão gera vapor. Eólica: vento gira pás. Solar fotovoltaica: converte luz diretamente em eletricidade.</p>`,k:"Em quase todas há movimento + gerador; a solar fotovoltaica é a exceção mais clara."}
+];
+
+const questions = [
+  {topic:"Biologia",q:"Onde ocorre normalmente a fecundação humana?",o:["No útero","Em uma das tubas uterinas","No ovário","No colo do útero"],a:1,e:"A fecundação normalmente ocorre em uma das tubas uterinas. Depois, o zigoto segue em direção ao útero."},
+  {topic:"Biologia",q:"Qual é a primeira célula formada após a fecundação?",o:["Embrião","Feto","Zigoto","Placenta"],a:2,e:"A união do espermatozoide com o ovócito forma o zigoto, primeira célula do novo indivíduo."},
+  {topic:"Biologia",q:"Nidação é:",o:["A liberação do ovócito","A fixação do embrião no endométrio","A formação da placenta","O início do parto"],a:1,e:"Nidação ou implantação é a fixação do embrião no endométrio, camada interna do útero."},
+  {topic:"Biologia",q:"Qual estrutura realiza trocas de oxigênio, nutrientes e resíduos entre gestante e feto?",o:["Cordão umbilical","Placenta","Líquido amniótico","Ovário"],a:1,e:"A placenta realiza as trocas; o cordão umbilical liga o feto à placenta."},
+  {topic:"Biologia",q:"Qual é a principal função do líquido amniótico destacada no conteúdo?",o:["Produzir hormônios","Fazer a fecundação","Proteger o feto e amortecer impactos","Produzir espermatozoides"],a:2,e:"O líquido amniótico envolve o feto, reduz impactos e permite seus movimentos."},
+  {topic:"Biologia",q:"Por volta de 24 semanas, qual sistema ainda apresenta importante imaturidade?",o:["Digestório","Respiratório, especialmente os pulmões","Ósseo","Urinário"],a:1,e:"Por volta de 24 semanas, o sistema nervoso está mais desenvolvido, mas os pulmões ainda estão imaturos."},
+  {topic:"Biologia",q:"No parto vaginal, a passagem do bebê é favorecida principalmente pela:",o:["Contração dos pulmões","Dilatação do colo do útero","Contração da placenta","Fecundação"],a:1,e:"As contrações uterinas e a dilatação do colo do útero permitem a passagem pelo canal vaginal."},
+  {topic:"Biologia",q:"Uma pessoa pode ter uma IST sem apresentar sintomas?",o:["Não, todas causam sintomas imediatos","Sim","Somente se for bactéria","Somente se for vírus"],a:1,e:"Sim. Várias IST podem ser assintomáticas, por isso diagnóstico e prevenção são importantes."},
+  {topic:"Biologia",q:"Qual alternativa relaciona corretamente a IST ao agente causador?",o:["Tricomoníase — vírus","Gonorreia — protozoário","Sífilis — bactéria","HPV — bactéria"],a:2,e:"A sífilis é causada pela bactéria Treponema pallidum. HPV é vírus; tricomoníase é protozoário; gonorreia é bacteriana."},
+  {topic:"Biologia",q:"Qual frase diferencia corretamente HIV e Aids?",o:["HIV é a doença e Aids é a bactéria","HIV é o vírus; Aids é uma fase avançada da infecção","São exatamente a mesma coisa","Aids é um vírus diferente do HIV"],a:1,e:"HIV é o vírus. Aids é a condição clínica que pode ocorrer em fase avançada quando o sistema imunológico está muito comprometido."},
+  {topic:"Biologia",q:"Qual método, entre os estudados, também reduz o risco de transmissão de IST?",o:["Pílula anticoncepcional","DIU","Preservativo","Tabelinha"],a:2,e:"Preservativos externo e interno ajudam a prevenir gravidez e reduzem o risco de transmissão de IST."},
+  {topic:"Biologia",q:"Por que a tabelinha pode falhar?",o:["Porque impede sempre a ovulação","Porque a ovulação pode variar","Porque contém hormônios","Porque bloqueia as tubas uterinas"],a:1,e:"O ciclo e a ovulação podem variar, especialmente em ciclos irregulares, tornando a estimativa dos dias férteis menos confiável."},
+  {topic:"Biologia",q:"Qual método cobre o colo do útero como barreira física, mas não é considerado proteção contra IST?",o:["Diafragma","Implante hormonal","DIU","Pílula"],a:0,e:"O diafragma é uma barreira física colocada na vagina para cobrir o colo do útero, mas não protege contra IST."},
+  {topic:"Biologia",q:"Qual é a ação principal dos métodos hormonais estudados?",o:["Aumentar a produção de espermatozoides","Principalmente impedir a ovulação e dificultar a gravidez","Bloquear fisicamente as tubas","Proteger contra IST"],a:1,e:"Pílula, injeções, implante e anel vaginal usam hormônios para principalmente impedir a ovulação e criar condições desfavoráveis à gravidez."},
+  {topic:"Biologia",q:"Na vasectomia, são cortados ou bloqueados:",o:["Ovários","Tubas uterinas","Canais deferentes","Ureteres"],a:2,e:"A vasectomia atua nos canais deferentes, impedindo que os espermatozoides cheguem ao sêmen ejaculado."},
+  {topic:"Biologia",q:"A vasectomia normalmente impede:",o:["A ejaculação","A produção de hormônios masculinos","A chegada dos espermatozoides ao sêmen","A produção de líquido seminal"],a:2,e:"Ela bloqueia o caminho dos espermatozoides. Não impede a produção de hormônios nem a ejaculação."},
+  {topic:"Energia e Trabalho",q:"Qual expressão representa a energia mecânica?",o:["Em = Ec + Ep","Em = m·g","Em = F·d","Em = k·x"],a:0,e:"Energia mecânica é a soma da energia cinética com a energia potencial."},
+  {topic:"Energia e Trabalho",q:"Um corpo de 2 kg move-se a 4 m/s. Qual é sua energia cinética?",o:["8 J","16 J","32 J","4 J"],a:1,e:"Ec=(2·4²)/2=(2·16)/2=16 J."},
+  {topic:"Energia e Trabalho",q:"Se a velocidade de um corpo dobra e a massa permanece igual, sua energia cinética fica:",o:["2 vezes maior","3 vezes maior","4 vezes maior","8 vezes maior"],a:2,e:"Como Ec depende de v², dobrar v multiplica Ec por 2² = 4."},
+  {topic:"Energia e Trabalho",q:"Um objeto de 3 kg está a 5 m de altura. Usando g=10 m/s², sua energia potencial gravitacional é:",o:["15 J","50 J","150 J","300 J"],a:2,e:"Epg=mgh=3·10·5=150 J."},
+  {topic:"Energia e Trabalho",q:"Energia potencial elástica depende principalmente de:",o:["Massa e altura","Deformação e constante elástica","Velocidade e tempo","Carga e tensão"],a:1,e:"A expressão é Epel=k·x²/2, envolvendo a constante elástica k e a deformação x."},
+  {topic:"Energia e Trabalho",q:"Em Física, há trabalho mecânico quando:",o:["Existe força, mesmo sem deslocamento","Uma força provoca deslocamento","O corpo está parado","Há apenas massa"],a:1,e:"Trabalho exige uma componente de força na direção do deslocamento."},
+  {topic:"Energia e Trabalho",q:"Se força e deslocamento são perpendiculares, o trabalho da força é:",o:["Máximo","Negativo","Zero","Sempre positivo"],a:2,e:"Com θ=90°, cos90°=0, então τ=F·d·0=0."},
+  {topic:"Energia e Trabalho",q:"Quando um corpo desce, o trabalho da força peso é, em geral:",o:["Positivo","Negativo","Zero","Impossível saber"],a:0,e:"Na descida, força peso e deslocamento têm o mesmo sentido, então o trabalho do peso é positivo."},
+  {topic:"Energia e Trabalho",q:"A relação τ = ΔEc significa que:",o:["Trabalho resultante é igual à variação da energia cinética","Peso é igual à massa","Energia potencial é constante","Corrente é igual à tensão"],a:0,e:"É o teorema trabalho–energia: o trabalho da força resultante modifica a energia cinética do corpo."},
+  {topic:"Energia e Trabalho",q:"Uma pessoa de 60 kg, em g=10 m/s², tem peso aproximado de:",o:["60 N","600 N","6 N","6000 N"],a:1,e:"P=m·g=60·10=600 N. Massa é 60 kg; peso é 600 N."},
+  {topic:"Energia e Trabalho",q:"Em um sistema ideal sem atrito, a energia mecânica:",o:["Sempre aumenta","Sempre diminui","Permanece constante","Vira massa"],a:2,e:"Sem forças dissipativas, Ec e Ep se transformam entre si, mas Em permanece constante."},
+  {topic:"Energia e Trabalho",q:"Na presença de atrito, parte da energia mecânica costuma se transformar principalmente em:",o:["Energia térmica","Energia nuclear","Massa","Carga elétrica"],a:0,e:"O atrito dissipa energia mecânica sobretudo em forma de calor e, às vezes, som."},
+  {topic:"Energia e Trabalho",q:"Qual conjunto contém somente fontes renováveis?",o:["Petróleo, carvão, gás","Solar, eólica, hidráulica, biomassa","Nuclear, petróleo, solar","Carvão, biomassa, gás"],a:1,e:"Solar, eólica, hidráulica e biomassa são consideradas renováveis no contexto do conteúdo."},
+  {topic:"Energia e Trabalho",q:"Qual combustível é não renovável e fóssil?",o:["Vento","Sol","Carvão mineral","Água"],a:2,e:"Carvão mineral é combustível fóssil e leva milhões de anos para se formar."},
+  {topic:"Energia e Trabalho",q:"No biodigestor, resíduos orgânicos podem gerar principalmente:",o:["Oxigênio puro","Biogás rico em metano","Urânio","Energia nuclear"],a:1,e:"A decomposição por microrganismos produz biogás, geralmente rico em metano."},
+  {topic:"Energia e Trabalho",q:"No forno solar, a principal transformação é:",o:["Elétrica → química","Luminosa → térmica","Nuclear → elétrica","Mecânica → elétrica"],a:1,e:"A radiação solar é absorvida e convertida em calor dentro do forno."},
+  {topic:"Eletricidade e Geração",q:"Qual material é bom condutor elétrico?",o:["Borracha","Plástico","Cobre","Cerâmica"],a:2,e:"Metais como cobre e alumínio possuem elétrons que podem se deslocar com mais facilidade."},
+  {topic:"Eletricidade e Geração",q:"Mantendo o mesmo material, qual fio tende a ter maior resistência?",o:["Mais curto e mais grosso","Mais comprido e mais fino","Mais curto e mais fino","Mais grosso e mais curto"],a:1,e:"Maior comprimento aumenta a resistência; maior espessura tende a diminuí-la."},
+  {topic:"Eletricidade e Geração",q:"Um átomo que perde elétrons fica:",o:["Negativo","Positivo","Neutro obrigatoriamente","Sem prótons"],a:1,e:"Perder elétrons deixa excesso relativo de carga positiva, formando um cátion."},
+  {topic:"Eletricidade e Geração",q:"Cargas elétricas de sinais iguais:",o:["Atraem-se","Repelem-se","Anulam a corrente","Transformam-se em nêutrons"],a:1,e:"Cargas iguais se repelem; cargas de sinais opostos se atraem."},
+  {topic:"Eletricidade e Geração",q:"Qual associação está correta?",o:["Tensão—A; Corrente—V; Resistência—J","Tensão—V; Corrente—A; Resistência—Ω","Tensão—Ω; Corrente—J; Resistência—V","Tensão—N; Corrente—kg; Resistência—A"],a:1,e:"Tensão é medida em volts (V), corrente em ampères (A) e resistência em ohms (Ω)."},
+  {topic:"Eletricidade e Geração",q:"Qual tipo de corrente é usado normalmente nas tomadas residenciais?",o:["Corrente contínua","Corrente alternada","Corrente gravitacional","Corrente térmica"],a:1,e:"A rede elétrica residencial usa corrente alternada (CA). Pilhas e baterias fornecem corrente contínua (CC)."},
+  {topic:"Eletricidade e Geração",q:"O efeito Joule corresponde principalmente à transformação de:",o:["Energia elétrica em térmica","Energia térmica em nuclear","Energia química em massa","Energia luminosa em gravitacional"],a:0,e:"A resistência elétrica provoca aquecimento quando corrente passa pelo material: elétrica → térmica."},
+  {topic:"Eletricidade e Geração",q:"Em um circuito aberto:",o:["A corrente circula normalmente","O caminho está interrompido","A tensão desaparece em qualquer situação","A resistência é sempre zero"],a:1,e:"Circuito aberto possui uma interrupção, então não há caminho completo para a corrente."},
+  {topic:"Eletricidade e Geração",q:"Por que instalações residenciais usam principalmente ligações em paralelo?",o:["Porque todos os aparelhos precisam apagar juntos","Porque cada ramo pode funcionar de forma mais independente","Porque não existe tensão nos ramos","Porque a corrente nunca se divide"],a:1,e:"No paralelo, cada aparelho pode operar sem depender diretamente do funcionamento dos outros ramos."},
+  {topic:"Eletricidade e Geração",q:"Numa hidrelétrica, o gerador transforma principalmente:",o:["Energia mecânica em elétrica","Elétrica em química","Térmica em nuclear","Luminosa em térmica"],a:0,e:"A água gira a turbina; o eixo movimenta o gerador, que converte energia mecânica em elétrica."},
+  {topic:"Eletricidade e Geração",q:"Polos magnéticos N e S:",o:["Sempre se repelem","Atraem-se","Não interagem","Produzem corrente sem movimento"],a:1,e:"Polos diferentes se atraem; polos iguais se repelem."},
+  {topic:"Eletricidade e Geração",q:"O que acontece ao redor de um fio percorrido por corrente elétrica?",o:["Surge um campo magnético","Some toda a resistência","Aparece massa extra","A tensão vira zero"],a:0,e:"Corrente elétrica produz campo magnético ao redor do condutor."},
+  {topic:"Eletricidade e Geração",q:"Indução eletromagnética ocorre quando:",o:["Um campo magnético varia através de um condutor","Um ímã fica totalmente parado sem alteração do fluxo","A temperatura cai a zero","A bateria é retirada e nada muda"],a:0,e:"A variação do fluxo/campo magnético através do circuito pode induzir uma corrente."},
+  {topic:"Eletricidade e Geração",q:"Um gerador elétrico converte:",o:["Energia elétrica em mecânica","Energia mecânica em elétrica","Energia térmica em massa","Energia química em nuclear"],a:1,e:"O gerador transforma energia mecânica de rotação em energia elétrica por indução eletromagnética."},
+  {topic:"Eletricidade e Geração",q:"Painéis fotovoltaicos fazem diretamente qual conversão?",o:["Luz → eletricidade","Calor → urânio","Eletricidade → vento","Mecânica → petróleo"],a:0,e:"Células fotovoltaicas convertem energia luminosa diretamente em energia elétrica."},
+  {topic:"Eletricidade e Geração",q:"Por que a energia é transmitida em alta tensão por longas distâncias?",o:["Para aumentar as perdas térmicas","Para reduzir a corrente necessária e as perdas por efeito Joule","Para impedir o uso de transformadores","Para transformar CA em CC automaticamente"],a:1,e:"Para uma mesma potência, tensão maior permite corrente menor, reduzindo perdas I²R nos fios."},
+  {topic:"Eletricidade e Geração",q:"Qual transformador é usado próximo às usinas para transmissão a longa distância?",o:["Abaixador","Elevador","Isolante","Resistivo"],a:1,e:"O transformador elevador aumenta a tensão para transmissão eficiente; depois transformadores abaixadores reduzem a tensão."},
+  {topic:"Eletricidade e Geração",q:"Qual sequência representa melhor o caminho da eletricidade até as casas?",o:["Casa → usina → barragem","Usina → transformador → transmissão → subestação → distribuição → consumidor","Subestação → Sol → bateria → casa","Turbina → petróleo → consumidor"],a:1,e:"Essa é a sequência típica da geração até a entrega ao consumidor."}
+];
+
+let lessonIndex = Number(localStorage.getItem("lessonIndex") || 0);
+let quizIndex = Number(localStorage.getItem("quizIndex") || 0);
+let score = Number(localStorage.getItem("score") || 0);
+let answered = JSON.parse(localStorage.getItem("answered") || "[]");
+let wrongs = JSON.parse(localStorage.getItem("wrongs") || "[]");
+
+function show(id){
+  ["home","study","quiz"].forEach(x=>document.getElementById(x).classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+}
+function save(){
+  localStorage.setItem("lessonIndex",lessonIndex);
+  localStorage.setItem("quizIndex",quizIndex);
+  localStorage.setItem("score",score);
+  localStorage.setItem("answered",JSON.stringify(answered));
+  localStorage.setItem("wrongs",JSON.stringify(wrongs));
+}
+function toast(msg){
+  const t=document.createElement("div"); t.className="toast"; t.textContent=msg;
+  document.body.appendChild(t); setTimeout(()=>t.remove(),1600);
+}
+function goHome(){ show("home"); window.scrollTo(0,0); }
+function startStudy(){ show("study"); renderStudy(); window.scrollTo(0,0); }
+function startQuiz(){ show("quiz"); renderQuiz(); window.scrollTo(0,0); }
+
+function modules(){
+  return [...new Set(lessons.map(x=>x.m))];
+}
+function moduleRange(mod){
+  return lessons.map((x,i)=>x.m===mod?i:-1).filter(i=>i>=0);
+}
+function renderTabs(){
+  const wrap=document.getElementById("moduleTabs"); wrap.innerHTML="";
+  const current=lessons[lessonIndex].m;
+  modules().forEach(mod=>{
+    const b=document.createElement("button");
+    b.className="module-tab"+(mod===current?" active":"");
+    b.textContent=mod;
+    b.onclick=()=>{ lessonIndex=moduleRange(mod)[0]; save(); renderStudy(); };
+    wrap.appendChild(b);
+  });
+}
+function renderStudy(){
+  if(lessonIndex<0) lessonIndex=0;
+  if(lessonIndex>=lessons.length) lessonIndex=lessons.length-1;
+  const L=lessons[lessonIndex];
+  renderTabs();
+  document.getElementById("studyEyebrow").textContent=L.m;
+  document.getElementById("studyTitle").textContent=L.t;
+  document.getElementById("studyBody").innerHTML=L.b;
+  document.getElementById("studyKey").innerHTML="<b>🎯 Para lembrar:</b> "+L.k;
+  document.getElementById("studyProgressText").textContent=`Explicação ${lessonIndex+1} de ${lessons.length}`;
+  document.getElementById("studyModuleText").textContent=L.m;
+  document.getElementById("studyProgressBar").style.width=((lessonIndex+1)/lessons.length*100)+"%";
+  document.getElementById("prevStudy").disabled=lessonIndex===0;
+  document.getElementById("prevStudy").style.opacity=lessonIndex===0?.45:1;
+  document.getElementById("nextStudy").textContent=lessonIndex===lessons.length-1?"Ir para as 50 questões →":"Próximo →";
+  save();
+}
+function nextStudy(){
+  if(lessonIndex<lessons.length-1){lessonIndex++; renderStudy();}
+  else startQuiz();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function prevStudy(){
+  if(lessonIndex>0){lessonIndex--; renderStudy(); window.scrollTo({top:0,behavior:"smooth"});}
+}
+
+function renderQuiz(){
+  const card=document.getElementById("quizCard");
+  const result=document.getElementById("result");
+  if(quizIndex>=questions.length){
+    card.classList.add("hidden"); result.classList.remove("hidden"); renderResult(); return;
+  }
+  card.classList.remove("hidden"); result.classList.add("hidden");
+  const Q=questions[quizIndex];
+  document.getElementById("quizProgress").textContent=`Questão ${quizIndex+1} de ${questions.length}`;
+  document.getElementById("scoreBadge").textContent=`${score} acerto${score===1?"":"s"}`;
+  document.getElementById("quizProgressBar").style.width=(quizIndex/questions.length*100)+"%";
+  document.getElementById("quizTopic").textContent=Q.topic;
+  document.getElementById("questionText").textContent=Q.q;
+  const options=document.getElementById("options"); options.innerHTML="";
+  const already=answered[quizIndex];
+  Q.o.forEach((op,i)=>{
+    const b=document.createElement("button"); b.className="option";
+    b.innerHTML=`<b>${String.fromCharCode(65+i)}.</b> ${op}`;
+    b.onclick=()=>answer(i);
+    if(already!==undefined){
+      b.disabled=true;
+      if(i===Q.a) b.classList.add("correct");
+      if(i===already && already!==Q.a) b.classList.add("wrong");
+    }
+    options.appendChild(b);
+  });
+  const fb=document.getElementById("feedback");
+  const next=document.getElementById("nextQuestion");
+  if(already!==undefined){
+    showFeedback(already);
+    next.classList.remove("hidden");
+  } else {
+    fb.classList.add("hidden"); fb.innerHTML="";
+    next.classList.add("hidden");
+  }
+  save();
+}
+function answer(choice){
+  if(answered[quizIndex]!==undefined) return;
+  const Q=questions[quizIndex];
+  answered[quizIndex]=choice;
+  if(choice===Q.a) score++;
+  else wrongs.push(quizIndex);
+  save(); renderQuiz();
+}
+function showFeedback(choice){
+  const Q=questions[quizIndex];
+  const fb=document.getElementById("feedback");
+  const ok=choice===Q.a;
+  fb.className="feedback "+(ok?"ok":"bad");
+  fb.innerHTML= ok
+    ? `<h3>✅ Acertou!</h3><b>Por quê?</b> ${Q.e}`
+    : `<h3>❌ Você errou.</h3><b>O que aconteceu?</b> Você marcou <b>${String.fromCharCode(65+choice)}</b>, mas a correta é <b>${String.fromCharCode(65+Q.a)}</b>.<br><br><b>Como acertar:</b> ${Q.e}`;
+}
+function nextQuestion(){
+  quizIndex++;
+  save(); renderQuiz(); window.scrollTo({top:0,behavior:"smooth"});
+}
+function renderResult(){
+  document.getElementById("quizProgressBar").style.width="100%";
+  document.getElementById("quizProgress").textContent="Quiz concluído";
+  document.getElementById("scoreBadge").textContent=`${score} acertos`;
+  const pct=Math.round(score/questions.length*100);
+  let msg=pct>=90?"Excelente domínio!":pct>=75?"Muito bom! Revise os erros.":pct>=60?"Bom começo. Vale revisar alguns pontos.":"Recomendo voltar às explicações e tentar de novo.";
+  const wrongUnique=[...new Set(wrongs)];
+  const review=wrongUnique.slice(0,12).map(i=>`<div class="review-item"><b>${i+1}. ${questions[i].q}</b>${questions[i].e}</div>`).join("");
+  document.getElementById("result").innerHTML=`
+    <div class="big">${score}/50</div>
+    <h2>${msg}</h2>
+    <p>Você acertou <b>${pct}%</b> das questões. ${wrongUnique.length?`Abaixo estão alguns pontos para revisar.`:"Você não errou nenhuma questão. Parabéns!"}</p>
+    ${wrongUnique.length?`<div class="review-list">${review}</div>`:""}
+    <div class="actions" style="margin-top:22px">
+      <button class="btn-primary" onclick="restartQuiz()">↻ Refazer as 50 questões</button>
+      <button class="btn-secondary" onclick="startStudy()">📘 Voltar às explicações</button>
+      <button class="btn-secondary" onclick="goHome()">⌂ Início</button>
+    </div>`;
+}
+function restartQuiz(){
+  quizIndex=0; score=0; answered=[]; wrongs=[]; save(); show("quiz"); renderQuiz(); window.scrollTo(0,0);
+}
+function resetAll(){
+  if(!confirm("Deseja apagar todo o progresso e recomeçar do zero?")) return;
+  lessonIndex=0; quizIndex=0; score=0; answered=[]; wrongs=[];
+  localStorage.removeItem("lessonIndex"); localStorage.removeItem("quizIndex");
+  localStorage.removeItem("score"); localStorage.removeItem("answered"); localStorage.removeItem("wrongs");
+  toast("Progresso apagado");
+  goHome();
+}
+</script>
+</body>
+</html>
